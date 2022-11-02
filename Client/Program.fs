@@ -4,16 +4,20 @@ open Browser
 open Elmish
 open Elmish.React
 open Feliz
+open Shared
+open Fable.SimpleJson
 
 type Page =
     |Autorisation
     |Chat
+
 
 type Model = { State: string
                TextBox: string
                Name: string
                Content: string list
                CurrentPage: Page}
+
 
 type Msg =
     | SentRequest
@@ -25,7 +29,8 @@ type Msg =
 
 
 
-let webSocket = WebSocket.Create($"ws://192.168.0.170:8080/websocket")
+let webSocket = WebSocket.Create($"ws://192.168.0.104:8080/websocket")
+
 let registerOnMessageHandler =
     fun dispatch ->
         async {
@@ -34,20 +39,32 @@ let registerOnMessageHandler =
 
 let init() = { State = "test1"
                TextBox = ""
-               Name =""
+               Name = ""
                Content = []
                CurrentPage = Page.Autorisation}, [ registerOnMessageHandler ]
-let sendRequest model = fun _ -> async { webSocket.send($"{model.Name}: {model.TextBox}\n") } |> Async.StartImmediate
+
+    
+
+let sendRequest model = 
+    let msgType = { MsgType = SendMessage ; Message = $"{model.Name}: {model.TextBox}\n"}
+    let msgTypeJson = Json.serialize msgType
+    fun _ -> async { webSocket.send msgTypeJson } |> Async.StartImmediate
+
+let sendName model = 
+    let msgType = { MsgType = Autorise ; Message = $"{model.Name}"}
+    let msgTypeJson = Json.serialize msgType   
+    fun _ -> async { webSocket.send msgTypeJson}|> Async.StartImmediate
     
 let update msg model =
     match msg with
-    | SentRequest    -> model, [ sendRequest model ]
+    | SentRequest    ->   model, [ sendRequest model ]
     | SetTextBox v   -> { model with TextBox = v }, Cmd.none
     | SetResponse r  -> { model with State = r }, Cmd.none
     | SetChat x      -> { model with
                             TextBox = ""
-                            Content = x::model.Content}, Cmd.none
-    | Autorisation page -> {model with CurrentPage = page}, Cmd.none
+                            Content = x::model.Content
+                            }, Cmd.none
+    | Autorisation page -> {model with CurrentPage = page}, [sendName model]
     | SetName x      -> {model with Name = x}, Cmd.none
 
 let appTitle =
@@ -119,10 +136,15 @@ let view (model: Model) dispatch =
               prop.children [
                   appTitle
                   Html.button [
+                    prop.classes [ "button"; "is-primary"; "is-medium" ]
                     prop.onClick  (fun _ -> dispatch (Autorisation Page.Chat)) 
                     prop.text "Autorise"
                     ]
-                  Html.input [ prop.onChange (SetName >> dispatch) ]
+                  Html.input [ 
+                    prop.classes [ "input"; "is-medium" ]
+                    prop.onChange (SetName >> dispatch)
+                    
+                    ]
                   Html.span $"Your name will be {model.Name}"
                ]
             ]
