@@ -29,7 +29,7 @@ type Msg =
 
 
 
-let webSocket = WebSocket.Create($"ws://192.168.0.104:8080/websocket")
+let webSocket = WebSocket.Create($"ws://192.168.0.170:8080/websocket")
 
 let registerOnMessageHandler =
     fun dispatch ->
@@ -76,7 +76,8 @@ let appTitle =
 let chatList (model: Model) (dispatch: Msg -> unit) =
   Html.ul [
     prop.children [
-      for chat in model.Content ->
+      let reversed = model.Content|> List.rev
+      for chat in reversed ->
         Html.li [
           prop.classes ["box"; "subtitle"]
           prop.text chat

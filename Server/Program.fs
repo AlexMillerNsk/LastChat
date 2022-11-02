@@ -62,7 +62,7 @@ let ws (webSocket : WebSocket) _ =
             match deserializedText.MsgType with
             | SendMessage ->
                 let byteResponse =
-                    text
+                    deserializedText.Message
                     |> System.Text.Encoding.ASCII.GetBytes
                     |> ByteSegment
                 printfn $"{text}"
