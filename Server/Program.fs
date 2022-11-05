@@ -14,28 +14,44 @@ open System.Net.Sockets
 open Shared
 open FSharp.Json
 
-type State = {Subscribers:WebSocket list}
+type Subscriber = WebSocket * string
+
+type State = {Subscribers:Subscriber list}
 
 type Msg =
     | SendAll of ByteSegment
-    | Subscribe of WebSocket
+    | Subscribe of Subscriber
     | Unsubscribe of WebSocket
+
+let msgMake x = x|>Json.serialize|> System.Text.Encoding.ASCII.GetBytes|> ByteSegment
 
 let processor = MailboxProcessor<Msg>.Start(fun inbox ->
     let rec innerLoop state  = async {
         let! message = inbox.Receive()
         match message with
-        | SendAll msg -> 
-//            state.Subscribers|>List.iter (fun x ->  x.send Text msg true)
+        | SendAll msg ->            
             for x in state.Subscribers do
-                let! result = x.send Text msg true
+                let ws = fst x
+                let! result = ws.send Text msg true
+                printfn "SendAll"
                 ()              
             do! innerLoop state
-        | Subscribe ws ->
-            let state = { state with Subscribers = ws::state.Subscribers }  
+        | Subscribe (x:Subscriber) ->
+            let state = { state with Subscribers = x::state.Subscribers } 
+            printfn "Subscribe"
+            let name = snd x
+            let msg = { MsgType = AutorisationType OpenAutorisation ; Message = name}|>msgMake
+            SendAll msg|>ignore
+            
+            ()
             do! innerLoop state
         | Unsubscribe ws -> 
-            let state = { state with Subscribers = state.Subscribers|> List.filter (fun x -> x <> ws) } 
+            let name = state.Subscribers|>List.find (fun (x,y) -> x = ws)|>snd 
+            let msg = { MsgType = AutorisationType ClosedAutorisation ; Message = name}|>msgMake
+            SendAll msg|>ignore
+            let state = { state with Subscribers = state.Subscribers|>List.filter (fun (x,y) -> x <> ws) }
+            printfn "Unsubscribe"
+            ()  
             do! innerLoop state
         ()
          }
@@ -46,10 +62,14 @@ let processor = MailboxProcessor<Msg>.Start(fun inbox ->
 let ipAdress = Dns.GetHostEntry(Dns.GetHostName()).AddressList|>Seq.find (fun x -> x.AddressFamily = AddressFamily.InterNetwork)
 let stringIpAdress = ipAdress.ToString()
 
-
+let closedWsMsg = 
+    let msg = { MsgType = AutorisationType ClosedAutorisation ; Message = ""}
+    let serializedMsg = Json.serialize msg
+    serializedMsg|> System.Text.Encoding.ASCII.GetBytes
+                    
 
 let ws (webSocket : WebSocket) _ =
-    processor.Post(Subscribe webSocket)
+    processor.Post(Subscribe (webSocket,""))
     socket {
         let mutable loop = true
         
@@ -68,13 +88,28 @@ let ws (webSocket : WebSocket) _ =
                 printfn $"{text}"
                 processor.Post(SendAll byteResponse )
                 ()
-            | Autorise -> printfn "u are the Best!"
+            | AutorisationType autorisationStatus ->
+                match autorisationStatus with
+                | OpenAutorisation -> 
+                    let name = deserializedText.Message
+                    let newSubscriber:Subscriber = (webSocket,name)
+                    processor.Post(Subscribe newSubscriber)
+                    printfn $"{newSubscriber}"                   
+                | _ -> printfn "error"
+
+
+
         | (Close, input, _) -> 
+            printfn "good bye boi"
             processor.Post (Unsubscribe webSocket)
+            processor.Post (SendAll (input|> ByteSegment ))
+            let text = ASCII.toString input 
+            printfn $"{text}"
             loop <- false
         | _ -> ()
            }
-        
+let result State = State.Subscribers|>List.map (fun (x,y) -> y.ToString())
+
 let app: WebPart =
      choose [
           GET >=> path "/" >=> Files.file "./public/index.html"    

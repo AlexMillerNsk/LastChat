@@ -6,6 +6,7 @@ open Elmish.React
 open Feliz
 open Shared
 open Fable.SimpleJson
+open FSharp
 
 type Page =
     |Autorisation
@@ -16,7 +17,8 @@ type Model = { State: string
                TextBox: string
                Name: string
                Content: string list
-               CurrentPage: Page}
+               CurrentPage: Page
+               Subscribers: string list}
 
 
 type Msg =
@@ -25,23 +27,36 @@ type Msg =
     | SetName of string
     | SetResponse of string
     | SetChat of string
-    | Autorisation of Page
+    | AutorisationSub of Page
+    | SetSubscribers of string
+    | DeleteSubscribers of string
 
 
 
 let webSocket = WebSocket.Create($"ws://192.168.0.170:8080/websocket")
 
+let closed = webSocket.addEventListener_close
+
+let chatDecoder x = 
+    let deserializedText = Json.parseAs<WsMessage> x
+    match deserializedText.MsgType with
+    | AutorisationType OpenAutorisation -> SetSubscribers (deserializedText.Message)
+    | AutorisationType ClosedAutorisation -> DeleteSubscribers (deserializedText.Message)
+    | SendMessage -> SetChat (deserializedText.Message)
+
+
 let registerOnMessageHandler =
     fun dispatch ->
         async {
-            webSocket.addEventListener_message (fun xy -> dispatch <| SetChat (xy.data.ToString()))
+            webSocket.addEventListener_message (fun xy -> dispatch <| chatDecoder (xy.data.ToString()))
         } |> Async.StartImmediate
 
 let init() = { State = "test1"
                TextBox = ""
                Name = ""
-               Content = []
-               CurrentPage = Page.Autorisation}, [ registerOnMessageHandler ]
+               Content = ["testcontent"]
+               CurrentPage = Page.Autorisation
+               Subscribers =["tester"]}, [ registerOnMessageHandler ]
 
     
 
@@ -51,9 +66,10 @@ let sendRequest model =
     fun _ -> async { webSocket.send msgTypeJson } |> Async.StartImmediate
 
 let sendName model = 
-    let msgType = { MsgType = Autorise ; Message = $"{model.Name}"}
+    let msgType = { MsgType = AutorisationType OpenAutorisation; Message = $"{model.Name}"}
     let msgTypeJson = Json.serialize msgType   
     fun _ -> async { webSocket.send msgTypeJson}|> Async.StartImmediate
+
     
 let update msg model =
     match msg with
@@ -64,8 +80,12 @@ let update msg model =
                             TextBox = ""
                             Content = x::model.Content
                             }, Cmd.none
-    | Autorisation page -> {model with CurrentPage = page}, [sendName model]
+    | AutorisationSub page -> {model with CurrentPage = page}, [sendName model]
     | SetName x      -> {model with Name = x}, Cmd.none
+    | SetSubscribers x -> {model with Subscribers = x::model.Subscribers}, Cmd.none
+    | DeleteSubscribers name -> {model with Subscribers = 
+                                      let newList = model.Subscribers|> List.filter (fun x -> x <> name)
+                                      newList}, Cmd.none
 
 let appTitle =
   Html.p [
@@ -73,17 +93,63 @@ let appTitle =
     prop.text "Welcome to our Awesome Chat!"
   ]
 
-let chatList (model: Model) (dispatch: Msg -> unit) =
-  Html.ul [
-    prop.children [
-      let reversed = model.Content|> List.rev
-      for chat in reversed ->
-        Html.li [
-          prop.classes ["box"; "subtitle"]
-          prop.text chat
+//let subscribersList (model: Model) (dispatch: Msg -> unit) =
+//  Html.ul [
+//    prop.children [
+//      for subscriber in model.Subscribers ->
+//        Html.li [
+//          prop.classes ["box"; "subtitle"]
+//          prop.text subscriber
+//        ]
+//    ]
+//  ]
+let div (classes: string list) (children: ReactElement list) =
+    Html.div [
+        prop.classes classes
+        prop.children children
+    ]
+let renderLists (model: Model) (dispatch: Msg -> unit) =
+  div [ "box" ] [
+    div [ "columns"; "is-mobile"; "is-vcentered" ] [
+      div [ "column" ] [
+          Html.ul [
+            prop.children [
+              let reversed = model.Content|> List.rev
+              for chat in reversed ->
+                Html.li [
+                  prop.classes ["box"; "subtitle"]
+                  prop.text chat
+                ]
+            ]
+          ]
         ]
+      div [ "column"; "is-narrow" ] [
+        div [ "buttons" ] [
+          Html.ul [
+            prop.children [
+              for subscriber in model.Subscribers ->
+                Html.li [
+                  prop.classes ["box"; "subtitle"]
+                  prop.text subscriber
+                ]
+            ]
+          ]
+        ]
+      ]
     ]
   ]
+
+//let chatList (model: Model) (dispatch: Msg -> unit) =
+//  Html.ul [
+//    prop.children [
+//      let reversed = model.Content|> List.rev
+//      for chat in reversed ->
+//        Html.li [
+//          prop.classes ["box"; "subtitle"]
+//          prop.text chat
+//        ]
+//    ]
+//  ]
 
 let inputField (model: Model) (dispatch: Msg -> unit) =
   Html.div [
@@ -126,7 +192,7 @@ let view (model: Model) dispatch =
           prop.children [
             appTitle
             inputField model dispatch         
-            chatList model dispatch          
+            renderLists model dispatch          
           ]     
         ]
 
@@ -138,7 +204,7 @@ let view (model: Model) dispatch =
                   appTitle
                   Html.button [
                     prop.classes [ "button"; "is-primary"; "is-medium" ]
-                    prop.onClick  (fun _ -> dispatch (Autorisation Page.Chat)) 
+                    prop.onClick  (fun _ -> dispatch (AutorisationSub Page.Chat)) 
                     prop.text "Autorise"
                     ]
                   Html.input [ 

@@ -1,11 +1,16 @@
 ﻿namespace Shared
 
+type AutorisationStatus = 
+    |OpenAutorisation 
+    |ClosedAutorisation
+
 type MsgType =
     | SendMessage
-    | Autorise
+    | AutorisationType of AutorisationStatus
+
 
 type WsMessage =
     { MsgType: MsgType ; Message: string}
-     static member Default = { MsgType = Autorise; Message = "" }
+     static member Default = { MsgType = SendMessage; Message = "" }
 
 
