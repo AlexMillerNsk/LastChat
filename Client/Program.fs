@@ -18,32 +18,27 @@ type Model = { State: string
                Name: string
                Content: string list
                CurrentPage: Page
-               Subscribers: string list}
+               Subscribers: string list }
 
 
 type Msg =
-    | SentRequest
+    | SentMsg
     | SetTextBox of string
     | SetName of string
     | SetResponse of string
     | SetChat of string
     | AutorisationSub of Page
     | SetSubscribers of string
-    | DeleteSubscribers of string
-
-
+    | DeleteSubscrb of string
 
 let webSocket = WebSocket.Create($"ws://192.168.0.170:8080/websocket")
-
-let closed = webSocket.addEventListener_close
 
 let chatDecoder x = 
     let deserializedText = Json.parseAs<WsMessage> x
     match deserializedText.MsgType with
+    | SendMessage -> SetChat (deserializedText.Message )
     | AutorisationType OpenAutorisation -> SetSubscribers (deserializedText.Message)
-    | AutorisationType ClosedAutorisation -> DeleteSubscribers (deserializedText.Message)
-    | SendMessage -> SetChat (deserializedText.Message)
-
+    | AutorisationType ClosedAutorisation -> DeleteSubscrb (deserializedText.Message)
 
 let registerOnMessageHandler =
     fun dispatch ->
@@ -51,14 +46,12 @@ let registerOnMessageHandler =
             webSocket.addEventListener_message (fun xy -> dispatch <| chatDecoder (xy.data.ToString()))
         } |> Async.StartImmediate
 
-let init() = { State = "test1"
+let init() = { State = ""
                TextBox = ""
                Name = ""
-               Content = ["testcontent"]
+               Content = []
                CurrentPage = Page.Autorisation
-               Subscribers =["tester"]}, [ registerOnMessageHandler ]
-
-    
+               Subscribers =[]}, [ registerOnMessageHandler ]   
 
 let sendRequest model = 
     let msgType = { MsgType = SendMessage ; Message = $"{model.Name}: {model.TextBox}\n"}
@@ -69,23 +62,22 @@ let sendName model =
     let msgType = { MsgType = AutorisationType OpenAutorisation; Message = $"{model.Name}"}
     let msgTypeJson = Json.serialize msgType   
     fun _ -> async { webSocket.send msgTypeJson}|> Async.StartImmediate
-
     
 let update msg model =
     match msg with
-    | SentRequest    ->   model, [ sendRequest model ]
-    | SetTextBox v   -> { model with TextBox = v }, Cmd.none
-    | SetResponse r  -> { model with State = r }, Cmd.none
-    | SetChat x      -> { model with
-                            TextBox = ""
-                            Content = x::model.Content
-                            }, Cmd.none
+    | SentMsg       ->   model, [ sendRequest model ]
+    | SetTextBox v        -> { model with TextBox = v }, Cmd.none
+    | SetResponse r       -> { model with State = r }, Cmd.none
+    | SetChat x           -> { model with
+                                Content = x::model.Content
+                                TextBox = ""
+                                }, Cmd.none
     | AutorisationSub page -> {model with CurrentPage = page}, [sendName model]
-    | SetName x      -> {model with Name = x}, Cmd.none
-    | SetSubscribers x -> {model with Subscribers = x::model.Subscribers}, Cmd.none
-    | DeleteSubscribers name -> {model with Subscribers = 
-                                      let newList = model.Subscribers|> List.filter (fun x -> x <> name)
-                                      newList}, Cmd.none
+    | SetName x           -> {model with Name = x}, Cmd.none
+    | SetSubscribers x    -> {model with Subscribers = x::model.Subscribers}, Cmd.none
+    | DeleteSubscrb name  -> {model with Subscribers = 
+                                          let newList = model.Subscribers|> List.filter (fun x -> x <> name)
+                                          newList}, Cmd.none
 
 let appTitle =
   Html.p [
@@ -93,16 +85,6 @@ let appTitle =
     prop.text "Welcome to our Awesome Chat!"
   ]
 
-//let subscribersList (model: Model) (dispatch: Msg -> unit) =
-//  Html.ul [
-//    prop.children [
-//      for subscriber in model.Subscribers ->
-//        Html.li [
-//          prop.classes ["box"; "subtitle"]
-//          prop.text subscriber
-//        ]
-//    ]
-//  ]
 let div (classes: string list) (children: ReactElement list) =
     Html.div [
         prop.classes classes
@@ -139,17 +121,17 @@ let renderLists (model: Model) (dispatch: Msg -> unit) =
     ]
   ]
 
-//let chatList (model: Model) (dispatch: Msg -> unit) =
-//  Html.ul [
-//    prop.children [
-//      let reversed = model.Content|> List.rev
-//      for chat in reversed ->
-//        Html.li [
-//          prop.classes ["box"; "subtitle"]
-//          prop.text chat
-//        ]
-//    ]
-//  ]
+let chatList (model: Model) (dispatch: Msg -> unit) =
+  Html.ul [
+    prop.children [
+      let reversed = model.Content|> List.rev
+      for chat in reversed ->
+        Html.li [
+          prop.classes ["box"; "subtitle"]
+          prop.text chat
+        ]
+    ]
+  ]
 
 let inputField (model: Model) (dispatch: Msg -> unit) =
   Html.div [
@@ -170,7 +152,7 @@ let inputField (model: Model) (dispatch: Msg -> unit) =
         prop.children [
           Html.button [
             prop.classes [ "button"; "is-primary"; "is-medium" ]
-            prop.onClick (fun _ -> dispatch SentRequest)
+            prop.onClick (fun _ -> dispatch SentMsg)
             prop.children [
               Html.i [ prop.classes [ "fa"; "fa-plus" ] ]
             ]
@@ -182,11 +164,6 @@ let inputField (model: Model) (dispatch: Msg -> unit) =
 let view (model: Model) dispatch =
     match model.CurrentPage with
     | Page.Chat ->
-        //div [] [
-        //    div [] [ str model.State ]
-        //    button [ OnClick (fun _ -> dispatch SentRequest) ] [ str "SendRequest" ]
-        //    div [  ] [ input [ Value model.TextBox; OnChange (fun e -> dispatch (SetTextBox e.Value) ) ] ]
-        //    str (model.Content.ToString())]
         Html.div [
           prop.style [style.padding 20]
           prop.children [
@@ -194,9 +171,7 @@ let view (model: Model) dispatch =
             inputField model dispatch         
             renderLists model dispatch          
           ]     
-        ]
-
-            
+        ]           
     | Page.Autorisation ->            
             Html.div [
               prop.style [style.padding 20]
@@ -209,13 +184,11 @@ let view (model: Model) dispatch =
                     ]
                   Html.input [ 
                     prop.classes [ "input"; "is-medium" ]
-                    prop.onChange (SetName >> dispatch)
-                    
+                    prop.onChange (SetName >> dispatch)                    
                     ]
                   Html.span $"Your name will be {model.Name}"
                ]
             ]
 Program.mkProgram init update view
-//|> Program.withSubscription onMessage 
 |> Program.withReactSynchronous "elmish-app"
 |> Program.run

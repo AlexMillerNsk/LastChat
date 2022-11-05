@@ -37,18 +37,26 @@ let processor = MailboxProcessor<Msg>.Start(fun inbox ->
                 ()              
             do! innerLoop state
         | Subscribe (x:Subscriber) ->
-            let state = { state with Subscribers = x::state.Subscribers } 
-            printfn "Subscribe"
+            let state = { state with Subscribers = x::state.Subscribers }           
             let name = snd x
-            let msg = { MsgType = AutorisationType OpenAutorisation ; Message = name}|>msgMake
-            SendAll msg|>ignore
-            
+            let test = { MsgType = AutorisationType OpenAutorisation ; Message = name}
+            let msg = test|>msgMake           
+            printfn $"{test}"
+            for subscriber in state.Subscribers do
+                let ws = fst subscriber
+                let! result = ws.send Text msg true
+                printfn "Send from Subscribe"
+                ()    
             ()
             do! innerLoop state
         | Unsubscribe ws -> 
             let name = state.Subscribers|>List.find (fun (x,y) -> x = ws)|>snd 
             let msg = { MsgType = AutorisationType ClosedAutorisation ; Message = name}|>msgMake
-            SendAll msg|>ignore
+            for subscriber in state.Subscribers do
+                let wss = fst subscriber
+                let! result = wss.send Text msg true
+                printfn "Send from Unubscribe"
+                ()   
             let state = { state with Subscribers = state.Subscribers|>List.filter (fun (x,y) -> x <> ws) }
             printfn "Unsubscribe"
             ()  
@@ -58,21 +66,12 @@ let processor = MailboxProcessor<Msg>.Start(fun inbox ->
 
     innerLoop {Subscribers=[]})
 
-
 let ipAdress = Dns.GetHostEntry(Dns.GetHostName()).AddressList|>Seq.find (fun x -> x.AddressFamily = AddressFamily.InterNetwork)
 let stringIpAdress = ipAdress.ToString()
-
-let closedWsMsg = 
-    let msg = { MsgType = AutorisationType ClosedAutorisation ; Message = ""}
-    let serializedMsg = Json.serialize msg
-    serializedMsg|> System.Text.Encoding.ASCII.GetBytes
                     
-
 let ws (webSocket : WebSocket) _ =
-    processor.Post(Subscribe (webSocket,""))
     socket {
-        let mutable loop = true
-        
+        let mutable loop = true       
         while loop do
         let! msg = webSocket.read()
         match msg with
@@ -82,7 +81,7 @@ let ws (webSocket : WebSocket) _ =
             match deserializedText.MsgType with
             | SendMessage ->
                 let byteResponse =
-                    deserializedText.Message
+                    text
                     |> System.Text.Encoding.ASCII.GetBytes
                     |> ByteSegment
                 printfn $"{text}"
@@ -96,9 +95,6 @@ let ws (webSocket : WebSocket) _ =
                     processor.Post(Subscribe newSubscriber)
                     printfn $"{newSubscriber}"                   
                 | _ -> printfn "error"
-
-
-
         | (Close, input, _) -> 
             printfn "good bye boi"
             processor.Post (Unsubscribe webSocket)
@@ -108,7 +104,7 @@ let ws (webSocket : WebSocket) _ =
             loop <- false
         | _ -> ()
            }
-let result State = State.Subscribers|>List.map (fun (x,y) -> y.ToString())
+let result state = state.Subscribers|>List.map (fun (x,y) -> y.ToString())
 
 let app: WebPart =
      choose [
