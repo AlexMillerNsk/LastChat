@@ -6,11 +6,17 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Fable.SimpleJson" Version="3.24.0" />
+      <PackageReference Include="FSharp.Json" Version="0.4.1" />
       <PackageReference Include="Suave" Version="2.6.2" />
     </ItemGroup>
 
     <ItemGroup>
       <Compile Include="Program.fs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Shared\Shared.fsproj" />
     </ItemGroup>
     
 </Project>
