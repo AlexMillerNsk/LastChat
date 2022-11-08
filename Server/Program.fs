@@ -38,10 +38,9 @@ let processor = MailboxProcessor<Msg>.Start(fun inbox ->
             do! innerLoop state
         | Subscribe (x:Subscriber) ->
             let state = { state with Subscribers = x::state.Subscribers }           
-            let name = snd x
-            let test = { MsgType = AutorisationType OpenAutorisation ; Message = name}
-            let msg = test|>msgMake           
-            printfn $"{test}"
+            let listNames = state.Subscribers|>List.map (fun (x,y) -> y)|>string
+            let msg = { MsgType = AutorisationType OpenAutorisation ; Message = listNames}|>msgMake           
+            printfn $"{listNames}"
             for subscriber in state.Subscribers do
                 let ws = fst subscriber
                 let! result = ws.send Text msg true
@@ -50,15 +49,15 @@ let processor = MailboxProcessor<Msg>.Start(fun inbox ->
             ()
             do! innerLoop state
         | Unsubscribe ws -> 
-            let name = state.Subscribers|>List.find (fun (x,y) -> x = ws)|>snd 
-            let msg = { MsgType = AutorisationType ClosedAutorisation ; Message = name}|>msgMake
+            let state = { state with Subscribers = state.Subscribers|>List.filter (fun (x,y) -> x <> ws) }
+            let listNames = state.Subscribers|>List.map (fun (x,y) -> y)|>string
+            let msg = { MsgType = AutorisationType ClosedAutorisation ; Message = listNames}|>msgMake
+            printfn $"{listNames}"
             for subscriber in state.Subscribers do
                 let wss = fst subscriber
                 let! result = wss.send Text msg true
                 printfn "Send from Unubscribe"
                 ()   
-            let state = { state with Subscribers = state.Subscribers|>List.filter (fun (x,y) -> x <> ws) }
-            printfn "Unsubscribe"
             ()  
             do! innerLoop state
         ()

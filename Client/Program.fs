@@ -18,7 +18,7 @@ type Model = { State: string
                Name: string
                Content: string list
                CurrentPage: Page
-               Subscribers: string list }
+               Subscribers: string  }
 
 
 type Msg =
@@ -29,7 +29,7 @@ type Msg =
     | SetChat of string
     | AutorisationSub of Page
     | SetSubscribers of string
-    | DeleteSubscrb of string
+
 
 let webSocket = WebSocket.Create($"ws://192.168.0.170:8080/websocket")
 
@@ -38,7 +38,7 @@ let chatDecoder x =
     match deserializedText.MsgType with
     | SendMessage -> SetChat (deserializedText.Message )
     | AutorisationType OpenAutorisation -> SetSubscribers (deserializedText.Message)
-    | AutorisationType ClosedAutorisation -> DeleteSubscrb (deserializedText.Message)
+    | AutorisationType ClosedAutorisation -> SetSubscribers (deserializedText.Message)
 
 let registerOnMessageHandler =
     fun dispatch ->
@@ -51,7 +51,7 @@ let init() = { State = ""
                Name = ""
                Content = []
                CurrentPage = Page.Autorisation
-               Subscribers =[]}, [ registerOnMessageHandler ]   
+               Subscribers =""}, [ registerOnMessageHandler ]   
 
 let sendRequest model = 
     let msgType = { MsgType = SendMessage ; Message = $"{model.Name}: {model.TextBox}\n"}
@@ -74,10 +74,8 @@ let update msg model =
                                 }, Cmd.none
     | AutorisationSub page -> {model with CurrentPage = page}, [sendName model]
     | SetName x           -> {model with Name = x}, Cmd.none
-    | SetSubscribers x    -> {model with Subscribers = x::model.Subscribers}, Cmd.none
-    | DeleteSubscrb name  -> {model with Subscribers = 
-                                          let newList = model.Subscribers|> List.filter (fun x -> x <> name)
-                                          newList}, Cmd.none
+    | SetSubscribers x    -> {model with Subscribers = x}, Cmd.none
+
 
 let appTitle =
   Html.p [
@@ -107,19 +105,15 @@ let renderLists (model: Model) (dispatch: Msg -> unit) =
         ]
       div [ "column"; "is-narrow" ] [
         div [ "buttons" ] [
-          Html.ul [
-            prop.children [
-              for subscriber in model.Subscribers ->
-                Html.li [
-                  prop.classes ["box"; "subtitle"]
-                  prop.text subscriber
-                ]
+            Html.ul [
+                prop.classes ["box"; "subtitle"]
+                prop.text model.Subscribers
             ]
           ]
         ]
       ]
     ]
-  ]
+  
 
 let chatList (model: Model) (dispatch: Msg -> unit) =
   Html.ul [
@@ -134,22 +128,16 @@ let chatList (model: Model) (dispatch: Msg -> unit) =
   ]
 
 let inputField (model: Model) (dispatch: Msg -> unit) =
-  Html.div [
-    prop.classes [ "field"; "has-addons" ]
-    prop.children [
-      Html.div [
-        prop.classes [ "control"; "is-expanded"]
-        prop.children [
+  div [ "field"; "has-addons" ] [
+      div [ "control"; "is-expanded"] [
           Html.input [
             prop.classes [ "input"; "is-medium" ]
             prop.valueOrDefault model.TextBox
             prop.onChange (SetTextBox >> dispatch)
           ]
-        ]
+        
       ]
-      Html.div [
-        prop.className "control"
-        prop.children [
+      div ["control"] [
           Html.button [
             prop.classes [ "button"; "is-primary"; "is-medium" ]
             prop.onClick (fun _ -> dispatch SentMsg)
@@ -157,10 +145,12 @@ let inputField (model: Model) (dispatch: Msg -> unit) =
               Html.i [ prop.classes [ "fa"; "fa-plus" ] ]
             ]
           ]
-        ]
       ]
-    ]
-  ]
+        
+  ] 
+      
+    
+
 let view (model: Model) dispatch =
     match model.CurrentPage with
     | Page.Chat ->
