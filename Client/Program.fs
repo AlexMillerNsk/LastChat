@@ -31,7 +31,7 @@ type Msg =
     | SetSubscribers of string
 
 
-let webSocket = WebSocket.Create($"ws://192.168.0.170:8080/websocket")
+let webSocket = WebSocket.Create($"ws://192.168.68.100:8080/websocket")
 
 let chatDecoder x = 
     let deserializedText = Json.parseAs<WsMessage> x

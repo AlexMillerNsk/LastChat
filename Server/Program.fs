@@ -1,5 +1,6 @@
 ﻿module Server
 
+open System
 open System.Net
 open System.IO
 open Suave
@@ -13,7 +14,10 @@ open Suave.Sockets
 open System.Net.Sockets
 open Shared
 open FSharp.Json
+open Suave.Successful
+open System.Threading
 
+ 
 type Subscriber = WebSocket * string
 
 type State = {Subscribers:Subscriber list}
@@ -66,7 +70,7 @@ let processor = MailboxProcessor<Msg>.Start(fun inbox ->
     innerLoop {Subscribers=[]})
 
 let ipAdress = Dns.GetHostEntry(Dns.GetHostName()).AddressList|>Seq.find (fun x -> x.AddressFamily = AddressFamily.InterNetwork)
-let stringIpAdress = ipAdress.ToString()
+let stringIpAdress = string ipAdress
                     
 let ws (webSocket : WebSocket) _ =
     socket {
@@ -103,20 +107,27 @@ let ws (webSocket : WebSocket) _ =
             loop <- false
         | _ -> ()
            }
-let result state = state.Subscribers|>List.map (fun (x,y) -> y.ToString())
+[<EntryPoint>]
+let main argv =
+    let app: WebPart =
+         choose [
+              GET >=> path "/" >=> Files.browseFileHome "index.html"    
+              GET >=> path "/test" >=> Successful.OK "Biden666"
+              GET >=> Files.browseHome
+              path "/websocket" >=> handShake ws
+              RequestErrors.NOT_FOUND "Page not found." 
+              POST >=> path "/hello" >=> OK "Hello POST"]  
 
-let app: WebPart =
-     choose [
-          GET >=> path "/" >=> Files.file "./public/index.html"    
-          GET >=> path "/test" >=> Successful.OK "Biden666"
-          GET >=> Files.browseHome
-          path "/websocket" >=> handShake ws
-          RequestErrors.NOT_FOUND "Page not found." ]
-
-let config = {
-    defaultConfig with
-        bindings = [HttpBinding.createSimple Protocol.HTTP stringIpAdress 8080]
-        homeFolder = Some(Path.GetFullPath "./public")
-}
-
-startWebServer config app
+    let portEnvVar = Environment.GetEnvironmentVariable "PORT"
+    let port = if String.IsNullOrEmpty portEnvVar then 8080 else (int)portEnvVar
+    let cts = new CancellationTokenSource()
+    let config = {
+        defaultConfig with
+            cancellationToken = cts.Token
+            bindings = [HttpBinding.createSimple HTTP "0.0.0.0" 8080]
+            homeFolder = Some(Path.GetFullPath "../Server/Public")
+    }
+    let f = Path.GetFullPath "../Server/Public"
+    printfn $"{f}"
+    startWebServer config app
+    0

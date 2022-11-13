@@ -1,0 +1,512 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v6.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v6.0": {
+      "Client/1.0.0": {
+        "dependencies": {
+          "Elmish": "3.1.0",
+          "FSharp.Core": "6.0.2",
+          "FSharp.Json": "0.4.1",
+          "Fable.Browser.Dom": "2.10.0",
+          "Fable.Core": "3.7.0",
+          "Fable.Elmish.React": "3.0.1",
+          "Fable.React": "8.0.1",
+          "Fable.Reaction": "3.5.0",
+          "Fable.SimpleJson": "3.24.0",
+          "Feliz": "1.68.0",
+          "Shared": "1.0.0"
+        },
+        "runtime": {
+          "Client.dll": {}
+        }
+      },
+      "Elmish/3.1.0": {
+        "dependencies": {
+          "FSharp.Core": "6.0.2"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Elmish.dll": {
+            "assemblyVersion": "3.1.0.0",
+            "fileVersion": "3.1.0.0"
+          }
+        }
+      },
+      "Fable.AST/3.0.0": {
+        "runtime": {
+          "lib/netstandard2.0/Fable.AST.dll": {
+            "assemblyVersion": "3.0.0.0",
+            "fileVersion": "3.0.0.0"
+          }
+        }
+      },
+      "Fable.Browser.Blob/1.2.0": {
+        "dependencies": {
+          "FSharp.Core": "6.0.2",
+          "Fable.Core": "3.7.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Browser.Blob.dll": {
+            "assemblyVersion": "1.2.0.0",
+            "fileVersion": "1.2.0.0"
+          }
+        }
+      },
+      "Fable.Browser.Dom/2.10.0": {
+        "dependencies": {
+          "FSharp.Core": "6.0.2",
+          "Fable.Browser.Blob": "1.2.0",
+          "Fable.Browser.Event": "1.5.0",
+          "Fable.Browser.WebStorage": "1.1.0",
+          "Fable.Core": "3.7.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Browser.Dom.dll": {
+            "assemblyVersion": "2.10.0.0",
+            "fileVersion": "2.10.0.0"
+          }
+        }
+      },
+      "Fable.Browser.Event/1.5.0": {
+        "dependencies": {
+          "FSharp.Core": "6.0.2",
+          "Fable.Browser.Gamepad": "1.1.0",
+          "Fable.Core": "3.7.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Browser.Event.dll": {
+            "assemblyVersion": "1.5.0.0",
+            "fileVersion": "1.5.0.0"
+          }
+        }
+      },
+      "Fable.Browser.Gamepad/1.1.0": {
+        "dependencies": {
+          "FSharp.Core": "6.0.2",
+          "Fable.Core": "3.7.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Browser.Gamepad.dll": {
+            "assemblyVersion": "1.1.0.0",
+            "fileVersion": "1.1.0.0"
+          }
+        }
+      },
+      "Fable.Browser.WebSocket/1.0.1": {
+        "dependencies": {
+          "FSharp.Core": "6.0.2",
+          "Fable.Browser.Event": "1.5.0",
+          "Fable.Core": "3.7.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Browser.WebSocket.dll": {
+            "assemblyVersion": "1.0.1.0",
+            "fileVersion": "1.0.1.0"
+          }
+        }
+      },
+      "Fable.Browser.WebStorage/1.1.0": {
+        "dependencies": {
+          "FSharp.Core": "6.0.2",
+          "Fable.Browser.Event": "1.5.0",
+          "Fable.Core": "3.7.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Browser.WebStorage.dll": {
+            "assemblyVersion": "1.1.0.0",
+            "fileVersion": "1.1.0.0"
+          }
+        }
+      },
+      "Fable.Core/3.7.0": {
+        "runtime": {
+          "lib/netstandard2.0/Fable.Core.dll": {
+            "assemblyVersion": "3.7.0.0",
+            "fileVersion": "3.7.0.0"
+          }
+        }
+      },
+      "Fable.Elmish/3.0.0": {
+        "dependencies": {
+          "FSharp.Core": "6.0.2",
+          "Fable.Core": "3.7.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Fable.Elmish.dll": {
+            "assemblyVersion": "3.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Fable.Elmish.React/3.0.1": {
+        "dependencies": {
+          "FSharp.Core": "6.0.2",
+          "Fable.Core": "3.7.0",
+          "Fable.Elmish": "3.0.0",
+          "Fable.React": "8.0.1"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Fable.Elmish.React.dll": {
+            "assemblyVersion": "3.0.1.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Fable.Fetch/2.2.0": {
+        "dependencies": {
+          "FSharp.Core": "6.0.2",
+          "Fable.Browser.Blob": "1.2.0",
+          "Fable.Core": "3.7.0",
+          "Fable.Promise": "2.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Fable.Fetch.dll": {
+            "assemblyVersion": "2.2.0.0",
+            "fileVersion": "2.2.0.0"
+          }
+        }
+      },
+      "Fable.Parsimmon/4.0.0": {
+        "dependencies": {
+          "FSharp.Core": "6.0.2",
+          "Fable.Core": "3.7.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Fable.Parsimmon.dll": {
+            "assemblyVersion": "4.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Fable.Promise/2.0.0": {
+        "dependencies": {
+          "FSharp.Core": "6.0.2",
+          "Fable.Core": "3.7.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Fable.Promise.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Fable.React/8.0.1": {
+        "dependencies": {
+          "FSharp.Core": "6.0.2",
+          "Fable.Browser.Dom": "2.10.0",
+          "Fable.Core": "3.7.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Fable.React.dll": {
+            "assemblyVersion": "8.0.1.0",
+            "fileVersion": "8.0.1.0"
+          }
+        }
+      },
+      "Fable.Reaction/3.5.0": {
+        "dependencies": {
+          "FSharp.Control.AsyncRx": "1.6.0",
+          "FSharp.Core": "6.0.2",
+          "Fable.Browser.Event": "1.5.0",
+          "Fable.Browser.WebSocket": "1.0.1",
+          "Fable.Core": "3.7.0",
+          "Fable.Fetch": "2.2.0",
+          "Fable.React": "8.0.1"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Fable.Reaction.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Fable.SimpleJson/3.24.0": {
+        "dependencies": {
+          "FSharp.Core": "6.0.2",
+          "Fable.Core": "3.7.0",
+          "Fable.Parsimmon": "4.0.0"
+        },
+        "runtime": {
+          "lib/net6.0/Fable.SimpleJson.dll": {
+            "assemblyVersion": "3.24.0.0",
+            "fileVersion": "3.24.0.0"
+          }
+        }
+      },
+      "Feliz/1.68.0": {
+        "dependencies": {
+          "FSharp.Core": "6.0.2",
+          "Fable.Core": "3.7.0",
+          "Fable.React": "8.0.1",
+          "Feliz.CompilerPlugins": "1.10.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Feliz.dll": {
+            "assemblyVersion": "1.68.0.0",
+            "fileVersion": "1.68.0.0"
+          }
+        }
+      },
+      "Feliz.CompilerPlugins/1.10.0": {
+        "dependencies": {
+          "FSharp.Core": "6.0.2",
+          "Fable.AST": "3.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Feliz.CompilerPlugins.dll": {
+            "assemblyVersion": "1.10.0.0",
+            "fileVersion": "1.10.0.0"
+          }
+        }
+      },
+      "FSharp.Control.AsyncRx/1.6.0": {
+        "dependencies": {
+          "FSharp.Core": "6.0.2"
+        },
+        "runtime": {
+          "lib/netstandard2.0/FSharp.Control.AsyncRx.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "FSharp.Core/6.0.2": {
+        "runtime": {
+          "lib/netstandard2.1/FSharp.Core.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.221.63103"
+          }
+        },
+        "resources": {
+          "lib/netstandard2.1/cs/FSharp.Core.resources.dll": {
+            "locale": "cs"
+          },
+          "lib/netstandard2.1/de/FSharp.Core.resources.dll": {
+            "locale": "de"
+          },
+          "lib/netstandard2.1/es/FSharp.Core.resources.dll": {
+            "locale": "es"
+          },
+          "lib/netstandard2.1/fr/FSharp.Core.resources.dll": {
+            "locale": "fr"
+          },
+          "lib/netstandard2.1/it/FSharp.Core.resources.dll": {
+            "locale": "it"
+          },
+          "lib/netstandard2.1/ja/FSharp.Core.resources.dll": {
+            "locale": "ja"
+          },
+          "lib/netstandard2.1/ko/FSharp.Core.resources.dll": {
+            "locale": "ko"
+          },
+          "lib/netstandard2.1/pl/FSharp.Core.resources.dll": {
+            "locale": "pl"
+          },
+          "lib/netstandard2.1/pt-BR/FSharp.Core.resources.dll": {
+            "locale": "pt-BR"
+          },
+          "lib/netstandard2.1/ru/FSharp.Core.resources.dll": {
+            "locale": "ru"
+          },
+          "lib/netstandard2.1/tr/FSharp.Core.resources.dll": {
+            "locale": "tr"
+          },
+          "lib/netstandard2.1/zh-Hans/FSharp.Core.resources.dll": {
+            "locale": "zh-Hans"
+          },
+          "lib/netstandard2.1/zh-Hant/FSharp.Core.resources.dll": {
+            "locale": "zh-Hant"
+          }
+        }
+      },
+      "FSharp.Json/0.4.1": {
+        "dependencies": {
+          "FSharp.Core": "6.0.2"
+        },
+        "runtime": {
+          "lib/netstandard2.0/FSharp.Json.dll": {
+            "assemblyVersion": "0.4.1.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Shared/1.0.0": {
+        "dependencies": {
+          "FSharp.Core": "6.0.2"
+        },
+        "runtime": {
+          "Shared.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Client/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Elmish/3.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-AwXmBx+dIMWsUOpFjjqZ4HZ71nGE0gMpy0iEox2ZZKis/pqLrhU49qnyB+05OEWjonwS0zfAAAPchV84y6qp5w==",
+      "path": "elmish/3.1.0",
+      "hashPath": "elmish.3.1.0.nupkg.sha512"
+    },
+    "Fable.AST/3.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ZOdBEEBln959E+F7vGim1zvf80iJAFWtH/hAcQRAU9aCs/8ZGf/kWk7TdlW0xuRK50dvALgWZKJc0Hd/2OP0XA==",
+      "path": "fable.ast/3.0.0",
+      "hashPath": "fable.ast.3.0.0.nupkg.sha512"
+    },
+    "Fable.Browser.Blob/1.2.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-bM4zbtIeycTFFCH7o4WuN28W70dTxNTMZiMvR70XUTYrBnbz7GpS5XxzUy5caDB4l7s2l7wiuVDhh52t7NXxDg==",
+      "path": "fable.browser.blob/1.2.0",
+      "hashPath": "fable.browser.blob.1.2.0.nupkg.sha512"
+    },
+    "Fable.Browser.Dom/2.10.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-DGbAzVcWYTfiYoShbbMpd75BpngbIFTjHeMoFPCtRGKORUMg11TLKiXoCxbwyjrCuXDKPNSlKjio1i66WgNGgA==",
+      "path": "fable.browser.dom/2.10.0",
+      "hashPath": "fable.browser.dom.2.10.0.nupkg.sha512"
+    },
+    "Fable.Browser.Event/1.5.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Bx2AOOASIG1Eq1Pe8869H8baMePte6STmKGccGuOYMT2p6nWVS8G6ZBZb5encQ0tAL2/0vhA4KJOl4bYwUaQqg==",
+      "path": "fable.browser.event/1.5.0",
+      "hashPath": "fable.browser.event.1.5.0.nupkg.sha512"
+    },
+    "Fable.Browser.Gamepad/1.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-8m/Ae/mrH2Hb2ue435rTPEeVb2FhfWsRJJLpCxMvk+5EUOO2+IIjIkLq4thUfRL98uQVt9V5cQd14h2aBf2XJA==",
+      "path": "fable.browser.gamepad/1.1.0",
+      "hashPath": "fable.browser.gamepad.1.1.0.nupkg.sha512"
+    },
+    "Fable.Browser.WebSocket/1.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-kndW7zk2fVSP2u/Q4dPu+dCksT3XcAmztX1XEZkyzagUVe+dLVSQx+Oia9ekYrH/WVBnI4y7o12eTSS0ToVVbQ==",
+      "path": "fable.browser.websocket/1.0.1",
+      "hashPath": "fable.browser.websocket.1.0.1.nupkg.sha512"
+    },
+    "Fable.Browser.WebStorage/1.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-tGktTk6QHIOeX7JtG5ISem1p9Rc1iYkgcbpIEzHS2YuvpOa9YomUKABU0Lraz4GMjAGxhhNvAXLRry2w89HdVQ==",
+      "path": "fable.browser.webstorage/1.1.0",
+      "hashPath": "fable.browser.webstorage.1.1.0.nupkg.sha512"
+    },
+    "Fable.Core/3.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-T+67w7XUaqHp2Lm9ESvrPoy7MrCFOYpUg6ASX4F+E1XDDnH+ElW2t1Jt+FjahRZZk6cS14i8JACte57P32FW9Q==",
+      "path": "fable.core/3.7.0",
+      "hashPath": "fable.core.3.7.0.nupkg.sha512"
+    },
+    "Fable.Elmish/3.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-nmMTykzFTT6Jukh12d/3WGYiUpOdJodD2gUOiVIJAjKGg9ejgPj7k17xA/tvfauKEH5S28ZKdI9furmaFakpTg==",
+      "path": "fable.elmish/3.0.0",
+      "hashPath": "fable.elmish.3.0.0.nupkg.sha512"
+    },
+    "Fable.Elmish.React/3.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-4VG0iY/Qdz0DR1G9VkwsYY+iDcLMnTUYV0h8LoJluvgfoHUe1BFcyK+C01MU5e15SZzHtRMdTbNcEeG3kPBcrQ==",
+      "path": "fable.elmish.react/3.0.1",
+      "hashPath": "fable.elmish.react.3.0.1.nupkg.sha512"
+    },
+    "Fable.Fetch/2.2.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-4XfgEmCDePrLZmFzndh4jflxbVYZw5OxY5D7pKwXQq1OyY8knq3pOH7XRZDGJI9JrWitMc0cUQ0QBjxtFG0Sfg==",
+      "path": "fable.fetch/2.2.0",
+      "hashPath": "fable.fetch.2.2.0.nupkg.sha512"
+    },
+    "Fable.Parsimmon/4.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-AaHqEcwjjv8q5S2gCNu6XsVcpChYM8D6aEb3sjjsAiLspwLrNLqm6vOEKdJKGnh0gSLHg6UWzLGA/Q4jrk+t/w==",
+      "path": "fable.parsimmon/4.0.0",
+      "hashPath": "fable.parsimmon.4.0.0.nupkg.sha512"
+    },
+    "Fable.Promise/2.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-rA9VD2uJTObnb8ghNmg/MTd8xMOJlVHmgNeKrP8SFMOP+tQ2tEDTf8xJ21HeR8ncuNxJP2CQkAfVlDxrLoHjZg==",
+      "path": "fable.promise/2.0.0",
+      "hashPath": "fable.promise.2.0.0.nupkg.sha512"
+    },
+    "Fable.React/8.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-/hJXprQhwTOOMyY/i+4DwS2PHG8t2gLAm1h/TSCUndTwgibBlAIovMuqiBJfaeyd/TtmPsej4OvAUJYBPEOUgg==",
+      "path": "fable.react/8.0.1",
+      "hashPath": "fable.react.8.0.1.nupkg.sha512"
+    },
+    "Fable.Reaction/3.5.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-UJam1KcIPCp3CA3rrD2Fq1rIl9ZgWeP/IYZHjKC214e/JSSjS4aiKCR/r3ffHMwCinJXAllm1BVeoqkRtbA2IA==",
+      "path": "fable.reaction/3.5.0",
+      "hashPath": "fable.reaction.3.5.0.nupkg.sha512"
+    },
+    "Fable.SimpleJson/3.24.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-mNk5s+8arkrrupT52/840xybT/DmaPUsJ926fTHk2uHOaWLnyNbUPY63Yg8zJZFCxSCzWrFpmB8rS9fcLVLJSg==",
+      "path": "fable.simplejson/3.24.0",
+      "hashPath": "fable.simplejson.3.24.0.nupkg.sha512"
+    },
+    "Feliz/1.68.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-KJ3Y4zDUhGfhkdUfdethuxuZ4XCuSQ19sC/S6nWAMuYyQvpRuoiUk8vSaatqF2FOB6HJcSsigODinjuNsgZ2hA==",
+      "path": "feliz/1.68.0",
+      "hashPath": "feliz.1.68.0.nupkg.sha512"
+    },
+    "Feliz.CompilerPlugins/1.10.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-3kTUNvpgAEaFpsxId5KnDQwPpO06bU5kUC5bh1Cf2gQKLqeIVtKP4E8rdtWDtQmT0S5UcGNKEjL8r+g43gTWDA==",
+      "path": "feliz.compilerplugins/1.10.0",
+      "hashPath": "feliz.compilerplugins.1.10.0.nupkg.sha512"
+    },
+    "FSharp.Control.AsyncRx/1.6.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-9OtDrf+SakpYXAK1CBNeMnXjb/mg6XL8FDG4pws5tyu1lM1xQ6Y4pC6ZnAsnCU+6Fvc1y+8Yu89ReC+0SpMurA==",
+      "path": "fsharp.control.asyncrx/1.6.0",
+      "hashPath": "fsharp.control.asyncrx.1.6.0.nupkg.sha512"
+    },
+    "FSharp.Core/6.0.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-8GZqv6buY71KQlWT+cl2eMi+aNX9xQ61RgI3Pzv9zPxPOX6tWCLRrBj0MYQ3h871r2RhiHUl7f0AXUD/POr8eA==",
+      "path": "fsharp.core/6.0.2",
+      "hashPath": "fsharp.core.6.0.2.nupkg.sha512"
+    },
+    "FSharp.Json/0.4.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-1vxUbXSN9bXRZCaj/Vau3AYT0kTBD717eF4M7J3cUjNAzyT36zD6mmN9tkf17r2k3/qv/S8Fc5bEsGtqKqtV4g==",
+      "path": "fsharp.json/0.4.1",
+      "hashPath": "fsharp.json.0.4.1.nupkg.sha512"
+    },
+    "Shared/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
