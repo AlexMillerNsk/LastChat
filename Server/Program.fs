@@ -124,7 +124,7 @@ let main argv =
     let config = {
         defaultConfig with
             cancellationToken = cts.Token
-            bindings = [HttpBinding.createSimple HTTP stringIpAdress port]
+            bindings = [HttpBinding.createSimple HTTP "158.160.18.7" port]
             homeFolder = Some(Path.GetFullPath "../Server/Public")
     }
     let f = Path.GetFullPath "../Server/Public"
