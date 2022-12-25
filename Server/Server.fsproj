@@ -6,8 +6,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Fable.Remoting.Suave" Version="4.32.0" />
       <PackageReference Include="Fable.SimpleJson" Version="3.24.0" />
       <PackageReference Include="FSharp.Json" Version="0.4.1" />
+      <PackageReference Include="Npgsql.FSharp" Version="5.5.0" />
       <PackageReference Include="Suave" Version="2.6.2" />
     </ItemGroup>
 
